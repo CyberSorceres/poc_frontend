@@ -27,11 +27,25 @@ export const loader: LoaderFunction<string> = async function ({ params }) {
               {
                 descript: "Implementa CHATGPT",
                 state: false,
+                feedback: [
+                  {
+                    text: "complimenti",
+                    id: "12345",
+                    user:"sabry12",
+                  },
+                ],
               },
               {
                 descript: "Fai altro",
                 state: true,
                 user: "Marco",
+                feedback:[
+                  {
+                    text: "complimenti",
+                    id: "12345",
+                    user:"sabry12",
+                  },
+                ],
               },
             ]
           : [],

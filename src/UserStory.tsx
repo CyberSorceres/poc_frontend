@@ -18,6 +18,20 @@ export default function ({
           label={userStory.descript}
         />
       </MDBContainer>
+      <div>
+        {
+          userStory.feedback.map(f=> <> <label for="w3review">
+            {f.user}
+          </label>
+
+          <textarea id="w3review" name="w3review" rows="4" cols="50">
+          {
+            f.text
+          }
+          </textarea>
+         </>)
+        }
+     </div>
     </>
   );
 }
