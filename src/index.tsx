@@ -6,6 +6,7 @@ import reportWebVitals from "./reportWebVitals";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ErrorPage from "./error-page";
 import Project, { loader as projectLoader } from "./Project";
+import { loader as navbarLoader } from "./Navbar";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -18,6 +19,7 @@ const router = createBrowserRouter([
         loader: projectLoader,
       },
     ],
+    loader: navbarLoader,
   },
 ]);
 

@@ -5,6 +5,7 @@ interface User {}
 
 export interface Project {
   name: string;
+  _id: string;
   validation: boolean;
   startDate: Date;
   endDate?: Date;

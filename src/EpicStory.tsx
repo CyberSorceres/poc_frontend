@@ -16,9 +16,9 @@ export default function ({ epicStory }: { epicStory: EpicStory }) {
   const [isEnabled, setEnabled] = useState(
     epicStory.userStory.map((e) => e.state),
   );
-    useEffect(() => {
-	console.log(isEnabled)
-    setIsComplete(epicStory.userStory.every(u=>u.state))
+  useEffect(() => {
+    console.log(isEnabled);
+    setIsComplete(epicStory.userStory.every((u) => u.state));
   }, [isEnabled]);
   return (
     <>
@@ -48,7 +48,7 @@ export default function ({ epicStory }: { epicStory: EpicStory }) {
                     setEnabled([
                       ...isEnabled.slice(0, i),
                       a,
-                      ...isEnabled.slice(i+1),
+                      ...isEnabled.slice(i + 1),
                     ]);
                   }}
                 />

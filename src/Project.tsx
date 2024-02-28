@@ -12,8 +12,12 @@ import {
 } from "mdb-react-ui-kit";
 
 export const loader: LoaderFunction<string> = async function ({ params }) {
-  console.log("called loader");
-  const project: Project = {
+  const project = await (
+    await fetch(
+      `${import.meta.env.VITE_API_URL}/getProject?id=${params.projectId}`,
+    )
+  ).json();
+  /*const project: Project = {
     name: params.projectId ?? "",
     validation: false,
     startDate: new Date(),
@@ -52,8 +56,8 @@ export const loader: LoaderFunction<string> = async function ({ params }) {
       },
     ],
     user: "",
-  };
-  return { project };
+    };*/
+  return project;
 };
 
 export default function () {

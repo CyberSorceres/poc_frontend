@@ -1,6 +1,6 @@
 import "mdb-react-ui-kit/dist/css/mdb.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import Navbar from "./Navbar.jsx";
+import Navbar from "./Navbar.js";
 import { Outlet } from "react-router-dom";
 //import './App.css';
 
