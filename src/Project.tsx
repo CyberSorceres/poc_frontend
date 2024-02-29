@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { LoaderFunction, useLoaderData } from "react-router-dom";
-import EpicStory from "./EpicStory";
+import { EpicStories, EpicStoriesPM, EpicStoriesSD, EpicStoriesUser} from "./EpicStory";
 import type { Project } from "./types/project";
 import {
   MDBContainer,
@@ -60,18 +60,23 @@ export const loader: LoaderFunction<string> = async function ({ params }) {
   return project;
 };
 
+
+
 export default function () {
   const { project: p } = useLoaderData() as { project: Project };
   const [project, setProject] = useState(p);
   if (p.name !== project.name) setProject(p);
+  const test = new EpicStoriesPM; 
   return (
     <>
       <MDBContainer fluid>
         <h3> {project.name} </h3>
       </MDBContainer>
       {project.epicStory.map((e) => (
-        <EpicStory key={e.descript} epicStory={e} />
+        <test.EpicStories key={e.descript} epicStory={e} />
       ))}
     </>
   );
 }
+
+
