@@ -63,20 +63,53 @@ export const loader: LoaderFunction<string> = async function ({ params }) {
 
 
 export default function () {
+ 
+ 
   const { project: p } = useLoaderData() as { project: Project };
   const [project, setProject] = useState(p);
   if (p.name !== project.name) setProject(p);
   const test = new EpicStoriesPM; 
-  return (
-    <>
-      <MDBContainer fluid>
-        <h3> {project.name} </h3>
-      </MDBContainer>
-      {project.epicStory.map((e) => (
-        <test.EpicStories key={e.descript} epicStory={e} />
-      ))}
-    </>
-  );
+  const role=import.meta.env.VITE_ROLE;
+
+  switch(role){
+    case dev:
+      const test = new EpicStoriesSD;
+      return (
+        <>
+          <MDBContainer fluid>
+            <h3> {project.name} </h3>
+          </MDBContainer>
+          {project.epicStory.map((e) => (
+            <test.EpicStories key={e.descript} epicStory={e} />
+          ))}
+        </>
+      );
+    case pm:
+      const test= new EpicStoriesPM;
+      return (
+        <>
+          <MDBContainer fluid>
+            <h3> {project.name} </h3>
+          </MDBContainer>
+          {project.epicStory.map((e) => (
+            <test.EpicStories key={e.descript} epicStory={e} />
+          ))}
+        </>
+      );
+    case user:
+      const test= new EpicStoriesUser;
+      return (
+        <>
+          <MDBContainer fluid>
+            <h3> {project.name} </h3>
+          </MDBContainer>
+          {project.epicStory.map((e) => (
+            <test.EpicStories key={e.descript} epicStory={e} />
+          ))}
+        </>
+      );
+  }
+  
 }
 
 
