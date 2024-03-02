@@ -19,19 +19,16 @@ export default function ({
         />
       </MDBContainer>
       <div>
-        {
-          userStory.feedback.map(f=> <> <label for="w3review">
-            {f.user}
-          </label>
-
-          <textarea id="w3review" name="w3review" rows="4" cols="50">
-          {
-            f.text
-          }
-          </textarea>
-         </>)
-        }
-     </div>
+        {userStory.feedback.map((f) => (
+          <>
+            {" "}
+            <label for="w3review">{f.user}</label>
+            <textarea id="w3review" name="w3review" rows="4" cols="50">
+              {f.text}
+            </textarea>
+          </>
+        ))}
+      </div>
     </>
   );
 }

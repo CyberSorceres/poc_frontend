@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { LoaderFunction, useLoaderData } from "react-router-dom";
-import { EpicStories, EpicStoriesPM, EpicStoriesSD, EpicStoriesUser} from "./EpicStory";
+import {
+  EpicStories,
+  EpicStoriesPM,
+  EpicStoriesSD,
+  EpicStoriesUser,
+} from "./EpicStory";
 import type { Project } from "./types/project";
 import {
   MDBContainer,
@@ -60,56 +65,30 @@ export const loader: LoaderFunction<string> = async function ({ params }) {
   return project;
 };
 
-
-
 export default function () {
- 
- 
   const { project: p } = useLoaderData() as { project: Project };
   const [project, setProject] = useState(p);
   if (p.name !== project.name) setProject(p);
-  const test = new EpicStoriesPM; 
-  const role=import.meta.env.VITE_ROLE;
+  let epicStoryComponent: EpicStories;
+  const role = import.meta.env.VITE_ROLE;
 
-  switch(role){
-    case dev:
-      const test = new EpicStoriesSD;
-      return (
-        <>
-          <MDBContainer fluid>
-            <h3> {project.name} </h3>
-          </MDBContainer>
-          {project.epicStory.map((e) => (
-            <test.EpicStories key={e.descript} epicStory={e} />
-          ))}
-        </>
-      );
-    case pm:
-      const test= new EpicStoriesPM;
-      return (
-        <>
-          <MDBContainer fluid>
-            <h3> {project.name} </h3>
-          </MDBContainer>
-          {project.epicStory.map((e) => (
-            <test.EpicStories key={e.descript} epicStory={e} />
-          ))}
-        </>
-      );
-    case user:
-      const test= new EpicStoriesUser;
-      return (
-        <>
-          <MDBContainer fluid>
-            <h3> {project.name} </h3>
-          </MDBContainer>
-          {project.epicStory.map((e) => (
-            <test.EpicStories key={e.descript} epicStory={e} />
-          ))}
-        </>
-      );
+  switch (role) {
+    case "dev":
+      epicStoryComponent = new EpicStoriesSD();
+    case "pm":
+      epicStoryComponent = new EpicStoriesPM();
+    case "user":
+      epicStoryComponent = new EpicStoriesUser();
   }
-  
+  console.log(p);
+  return (
+    <>
+      <MDBContainer fluid>
+        <h3> {project.name} </h3>
+      </MDBContainer>
+      {project.epicStory.map((e) => (
+        <epicStoryComponent.EpicStories key={e.descript} epicStory={e} />
+      ))}
+    </>
+  );
 }
-
-
