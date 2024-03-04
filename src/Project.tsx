@@ -19,7 +19,7 @@ export const loader: LoaderFunction<string> = async function ({ params }) {
   ).json();
   /*const project: Project = {
     name: params.projectId ?? "",
-    validation: false,
+    validation: false,s
     startDate: new Date(),
     epicStory: [
       {
@@ -69,11 +69,11 @@ export default function () {
   const [project, setProject] = useState(p);
   if (p.name !== project.name) setProject(p);
   const test = new EpicStoriesPM; 
-  const role=import.meta.env.VITE_ROLE;
+  //const role=import.meta.env.VITE_ROLE;
 
-  switch(role){
+  /*switch(role){
     case dev:
-      const test = new EpicStoriesSD;
+      const test = new EpicStoriesSD;*/
       return (
         <>
           <MDBContainer fluid>
@@ -84,7 +84,7 @@ export default function () {
           ))}
         </>
       );
-    case pm:
+    /*case pm:
       const test= new EpicStoriesPM;
       return (
         <>
@@ -108,7 +108,7 @@ export default function () {
           ))}
         </>
       );
-  }
+  }*/
   
 }
 
