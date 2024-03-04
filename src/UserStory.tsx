@@ -19,7 +19,7 @@ export default function ({
         />
       </MDBContainer>
       <div>
-        {userStory.feedback.map((f) => (
+        {userStory?.feedback?.map((f) => (
           <>
             {" "}
             <label for="w3review">{f.user}</label>
@@ -27,7 +27,7 @@ export default function ({
               {f.text}
             </textarea>
           </>
-        ))}
+        )) ?? []}
       </div>
     </>
   );
