@@ -1,8 +1,10 @@
 import { Feedback } from "./feedback";
+import { User } from "./user";
+
 
 export interface UserStory {
   descript: string;
   state: boolean;
-  user?: string;
+  user: User[];
   feedback: Feedback;
 }
