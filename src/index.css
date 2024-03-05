@@ -27,3 +27,26 @@ body {
 .epic-story {
   font-weight: bold;
 }
+
+.navbar>.menu{
+  width: auto;
+  margin: 0;
+}
+
+.divBtnProject{
+  margin-right: 1em;
+  display:flex;
+  float: right;
+
+}
+
+.feedback{
+  display:block;
+  width: 100%;
+}
+
+.chooseRole{
+  width: 30%;
+  float:right;
+  display:flex;
+}
