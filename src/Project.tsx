@@ -76,20 +76,29 @@ export default function () {
   switch (role) {
     case "dev":
       epicStoryComponent = new EpicStoriesSD();
+      break;
     case "pm":
       epicStoryComponent = new EpicStoriesPM();
+      break;
     case "user":
       epicStoryComponent = new EpicStoriesUser();
+      break;
   }
-  console.log(p);
+  console.log(project);
   return (
     <>
       <MDBContainer fluid>
         <h3> {project.name} </h3>
       </MDBContainer>
-      {project.epicStory.map((e) => (
-        <epicStoryComponent.EpicStories key={e.descript} epicStory={e} />
-      ))}
+      <div>
+        {project.epicStory.map((e) => (
+          <epicStoryComponent.EpicStories
+            key={e._id}
+            epicStory={e}
+            users={p.user}
+          />
+        ))}
+      </div>
     </>
   );
 }

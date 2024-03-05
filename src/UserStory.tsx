@@ -1,12 +1,21 @@
-import { MDBCheckbox, MDBCol, MDBContainer, MDBInput, MDBSelect} from "mdb-react-ui-kit";
+import {
+  MDBCheckbox,
+  MDBCol,
+  MDBContainer,
+  MDBInput,
+  MDBSelect,
+} from "mdb-react-ui-kit";
 import type { UserStory } from "./types/user_story";
-import {useMemo} from "react";
+import type { User } from "./types/user";
+import { useMemo } from "react";
 
-export default function ({
+export default function UserStory({
   userStory,
+  users = [],
   sendToParent,
 }: {
   userStory: UserStory;
+  users: User[];
   sendToParent: (isActive: boolean) => void;
 }) {
   /*const data = useMemo(
@@ -28,13 +37,11 @@ export default function ({
         />
       </MDBContainer>
       <select className="chooseRole">
-        {userStory?.user?.filter((u) => u.role=="dev" ).map((f) =>(
-          <>
-          <option>{f.name}</option>
-          </>
-        ))??[]}
-        </select>
-       {/*} <MDBContainer style={{ width: "300px" }} className="mt-5">
+        {users
+          ?.filter((u) => u.role == "sviluppatore")
+          .map((f) => <option key={f._id}>{f.name}</option>) ?? []}
+      </select>
+      {/*} <MDBContainer style={{ width: "300px" }} className="mt-5">
       {inputActive ? (
         <MDBInput onBlur={inputOnBlur} inputRef={otherInputEl} label="Other" id="form1" type="text" />
       ) : (
@@ -47,15 +54,19 @@ export default function ({
     </MDBContainer>{*/}
       <div>
         {userStory?.feedback?.map((f) => (
-          <>
+          <div key={f._id}>
             {" "}
             <div className="feedback">
-            <label for="w3review">{f.user}</label>
-            <textarea id="w3review" name="w3review" rows="4" cols="50">
-              {f.text}
-            </textarea>
+              <label htmlFor="w3review">{f.user}</label>
+              <textarea
+                id="w3review"
+                name="w3review"
+                rows="4"
+                cols="50"
+                defaultValue={f.text}
+              ></textarea>
             </div>
-          </>
+          </div>
         )) ?? []}
       </div>
     </>
