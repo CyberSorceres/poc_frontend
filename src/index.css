@@ -28,25 +28,24 @@ body {
   font-weight: bold;
 }
 
-.navbar>.menu{
+.navbar > .menu {
   width: auto;
   margin: 0;
 }
 
-.divBtnProject{
+.divBtnProject {
   margin-right: 1em;
-  display:flex;
+  display: flex;
   float: right;
-
 }
 
-.feedback{
-  display:block;
+.feedback {
+  display: block;
   width: 100%;
 }
 
-.chooseRole{
+.chooseRole {
   width: 30%;
-  float:right;
-  display:flex;
+  float: right;
+  display: flex;
 }
