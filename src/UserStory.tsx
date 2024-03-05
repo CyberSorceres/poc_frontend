@@ -39,11 +39,7 @@ export default function UserStory({
       <select className="chooseRole">
         {users
           ?.filter((u) => u.role == "sviluppatore")
-          .map((f) => (
-            <>
-              <option>{f.name}</option>
-            </>
-          )) ?? []}
+          .map((f) => <option key={f._id}>{f.name}</option>) ?? []}
       </select>
       {/*} <MDBContainer style={{ width: "300px" }} className="mt-5">
       {inputActive ? (

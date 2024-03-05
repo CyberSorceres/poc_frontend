@@ -68,8 +68,6 @@ export class EpicStoriesUser implements EpicStories {
 
 export class EpicStoriesPM implements EpicStories {
   EpicStories({ epicStory, users }: { epicStory: EpicStory; users: User[] }) {
-    console.log("hi");
-
     const [showUserStories, setShowUserStories] = useState(false);
     const [isComplete, setIsComplete] = useState(false);
     const [isEnabled, setEnabled] = useState(
