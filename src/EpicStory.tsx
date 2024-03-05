@@ -1,4 +1,5 @@
 import type { EpicStory } from "./types/epic_story";
+import type { User } from "./types/user";
 import { useEffect, useState } from "react";
 import {
   MDBCheckbox,
@@ -21,7 +22,6 @@ export class EpicStoriesUser implements EpicStories {
       epicStory.userStory.map((e) => e.state),
     );
     useEffect(() => {
-      console.log(isEnabled);
       setIsComplete(epicStory.userStory.every((u) => u.state));
     }, [isEnabled]);
     return (
@@ -43,9 +43,9 @@ export class EpicStoriesUser implements EpicStories {
           <MDBCollapse open={showUserStories}>
             {epicStory.userStory.map((u, i) => {
               return (
-                <MDBRow>
+                <MDBRow key={u._id}>
                   <UserStory
-                    key={u.descript}
+                    key={u._id}
                     userStory={u}
                     sendToParent={(a) => {
                       u.state = a;
@@ -67,14 +67,13 @@ export class EpicStoriesUser implements EpicStories {
 }
 
 export class EpicStoriesPM implements EpicStories {
-  EpicStories({ epicStory }: { epicStory: EpicStory }) {
+  EpicStories({ epicStory, users }: { epicStory: EpicStory; users: User[] }) {
     const [showUserStories, setShowUserStories] = useState(false);
     const [isComplete, setIsComplete] = useState(false);
     const [isEnabled, setEnabled] = useState(
       epicStory.userStory.map((e) => e.state),
     );
     useEffect(() => {
-      console.log(isEnabled);
       setIsComplete(epicStory.userStory.every((u) => u.state));
     }, [isEnabled]);
     return (
@@ -82,7 +81,7 @@ export class EpicStoriesPM implements EpicStories {
         <MDBContainer fluid className="d-block bg-secondary">
           <MDBRow onClick={() => setShowUserStories(!showUserStories)}>
             <span className="epic-story">
-              <i className={`arrow ${showUserStories ? "right" : "down"}`}></i>
+              <i className={`arrow ${showUserStories ? "down" : "right"}`}></i>
               &nbsp;
               <MDBCheckbox
                 disableWrapper={true}
@@ -96,10 +95,11 @@ export class EpicStoriesPM implements EpicStories {
           <MDBCollapse open={showUserStories}>
             {epicStory.userStory.map((u, i) => {
               return (
-                <MDBRow>
+                <MDBRow key={u._id}>
                   <UserStory
-                    key={u.descript}
+                    key={u._id}
                     userStory={u}
+                    users={users}
                     sendToParent={(a) => {
                       u.state = a;
                       setEnabled([
@@ -127,7 +127,6 @@ export class EpicStoriesSD implements EpicStories {
       epicStory.userStory.map((e) => e.state),
     );
     useEffect(() => {
-      console.log(isEnabled);
       setIsComplete(epicStory.userStory.every((u) => u.state));
     }, [isEnabled]);
     return (
@@ -149,9 +148,9 @@ export class EpicStoriesSD implements EpicStories {
           <MDBCollapse open={showUserStories}>
             {epicStory.userStory.map((u, i) => {
               return (
-                <MDBRow>
+                <MDBRow key={u._id}>
                   <UserStory
-                    key={u.descript}
+                    key={u._id}
                     userStory={u}
                     sendToParent={(a) => {
                       u.state = a;

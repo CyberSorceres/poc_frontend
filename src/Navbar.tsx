@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useState } from "react";
-import { useRevalidator } from 'react-router-dom';
+import { useRevalidator } from "react-router-dom";
 import {
   MDBContainer,
   MDBCollapse,
@@ -32,10 +32,10 @@ export default function App() {
   const [showNavExternal, setShowNavExternal] = useState(false);
   const { projects } = useLoaderData() as { projects: Project[] };
 
-  const [varyingState, setVaryingState] = useState('');
+  const [varyingState, setVaryingState] = useState("");
   const [varyingModal, setVaryingModal] = useState(false);
-  const [varyingRecipient, setVaryingRecipient] = useState('');
-  const [varyingMessage, setVaryingMessage] = useState('');
+  const [varyingRecipient, setVaryingRecipient] = useState("");
+  const [varyingMessage, setVaryingMessage] = useState("");
 
   const onChangeRecipient = (event: ChangeEvent<HTMLInputElement>) => {
     setVaryingRecipient(event.target.value);
@@ -45,17 +45,19 @@ export default function App() {
     setVaryingMessage(event.target.value);
   };
 
-  const addProject = async(title:string, descript:string)=>{
-    await fetch (`${import.meta.env.VITE_API_URL}/addProgetto`, {method:"POST", body: JSON.stringify({
-      name: title,
-      descript: descript
-      })});
-      /*const revalidator = useRevalidator();
+  const addProject = async (title: string, descript: string) => {
+    await fetch(`${import.meta.env.VITE_API_URL}/addProgetto`, {
+      method: "POST",
+      body: JSON.stringify({
+        name: title,
+        descript: descript,
+      }),
+    });
+    /*const revalidator = useRevalidator();
 
       // run when you need to update
       revalidator.revalidate();*/
-      window.location.reload();
-    
+    window.location.reload();
   };
 
   return (
@@ -73,73 +75,88 @@ export default function App() {
             <MDBIcon icon="bars" fas />
           </MDBNavbarToggler>
         </MDBContainer>
-        { 
-          (import.meta.env.VITE_ROLE=="user") ? //andrà modificato con isUser(user)
+        {import.meta.env.VITE_ROLE == "user" ? ( //andrà modificato con isUser(user)
           <>
-          <MDBBtn className="divBtnProject"
-          onClick={() => {
-            setVaryingState('');
-            setVaryingModal(!varyingModal);
-            setVaryingRecipient('');
-          }}>
-          New Project
-          </MDBBtn>
-              <MDBModal open={varyingModal} setOpen={setVaryingModal} tabIndex='-1'>
+            <MDBBtn
+              className="divBtnProject"
+              onClick={() => {
+                setVaryingState("");
+                setVaryingModal(!varyingModal);
+                setVaryingRecipient("");
+              }}
+            >
+              New Project
+            </MDBBtn>
+            <MDBModal
+              open={varyingModal}
+              setOpen={setVaryingModal}
+              tabIndex="-1"
+            >
               <MDBModalDialog>
                 <MDBModalContent>
                   <MDBModalHeader>
                     <MDBModalTitle>Crea il nuovo progetto</MDBModalTitle>
-                    <MDBBtn className='btn-close' color='none' onClick={() => setVaryingModal(!varyingModal)}></MDBBtn>
+                    <MDBBtn
+                      className="btn-close"
+                      color="none"
+                      onClick={() => setVaryingModal(!varyingModal)}
+                    ></MDBBtn>
                   </MDBModalHeader>
                   <MDBModalBody>
                     <form>
-                      <div className='mb-3'>
+                      <div className="mb-3">
                         {varyingModal && (
                           <MDBInput
                             value={varyingRecipient}
                             onChange={onChangeRecipient}
-                            labelClass='col-form-label'
-                            label='Titolo del Progetto:'
+                            labelClass="col-form-label"
+                            label="Titolo del Progetto:"
                           />
                         )}
                       </div>
-                      <div className='mb-3'>
+                      <div className="mb-3">
                         {varyingModal && (
                           <MDBTextArea
                             value={varyingMessage}
                             onChange={onChangeMessage}
-                            labelClass='col-form-label'
-                            label='Descrizione Progetto:'
+                            labelClass="col-form-label"
+                            label="Descrizione Progetto:"
                           />
                         )}
                       </div>
                     </form>
                   </MDBModalBody>
                   <MDBModalFooter>
-                    <MDBBtn color='secondary' onClick={() => setVaryingModal(!varyingModal)}>
+                    <MDBBtn
+                      color="secondary"
+                      onClick={() => setVaryingModal(!varyingModal)}
+                    >
                       Close
                     </MDBBtn>
-                    <MDBBtn onClick={()=>addProject(varyingRecipient,varyingMessage)}>Invia Proposta di Progetto</MDBBtn>
+                    <MDBBtn
+                      onClick={() =>
+                        addProject(varyingRecipient, varyingMessage)
+                      }
+                    >
+                      Invia Proposta di Progetto
+                    </MDBBtn>
                   </MDBModalFooter>
                 </MDBModalContent>
               </MDBModalDialog>
             </MDBModal>
           </>
-         :
+        ) : (
           <></>
-        } 
+        )}
       </MDBNavbar>
 
       <MDBCollapse open={showNavExternal}>
         <div className="bg-light shadow-3 p-4">
           {projects.map((p) => (
-            <>
-              <Link key={p._id} to={`project/${p._id}`}>
-                {" "}
-                {p.name}{" "}
-              </Link>
+            <div key={p._id}>
+              <Link to={`project/${p._id}`}> {p.name} </Link>
               <br />
-            </>
+            </div>
           ))}
         </div>
       </MDBCollapse>

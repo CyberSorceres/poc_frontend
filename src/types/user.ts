@@ -6,6 +6,7 @@ export interface User {
   password: string;
   role: string;
   mail: string;
+  _id: string;
   userStory: UserStory[];
   project: Project[];
 }

@@ -1,16 +1,20 @@
+
 import { MDBCheckbox, MDBCol, MDBContainer, MDBInput} from "mdb-react-ui-kit";
 import type { UserStory } from "./types/user_story";
 import type { User } from "./types/user";
 import Select, { ValueType } from 'react-select';
 import React, { useCallback, useEffect, useMemo, useRef, useState, CSSProperties, SetStateAction } from "react";
 
-export default function ({
+
+export default function UserStory({
   userStory,
-  user,
+
+  users = [],
   sendToParent,
 }: {
   userStory: UserStory;
-  user: User[];
+  users: User[];
+
   sendToParent: (isActive: boolean) => void;
 }) {
   const data= user?.filter((u) => u.role=="sviluppatore" ).map((u) => ({ value: u._id, label: u.name }));
@@ -35,6 +39,7 @@ export default function ({
           label={userStory.descript}
         />
       </MDBContainer>
+
       {(import.meta.env.VITE_ROLE=="pm") ?
       <>
       <Select
@@ -64,17 +69,40 @@ export default function ({
       }
     
       
+
+        {/*}
+      <select className="chooseRole">
+        {users
+          ?.filter((u) => u.role == "sviluppatore")
+          .map((f) => <option key={f._id}>{f.name}</option>) ?? []}
+      </select>
+      {/*} <MDBContainer style={{ width: "300px" }} className="mt-5">
+      {inputActive ? (
+        <MDBInput onBlur={inputOnBlur} inputRef={otherInputEl} label="Other" id="form1" type="text" />
+      ) : (
+        <MDBSelect
+          onValueChange={(e) => setCurrentValue(e)}
+          label="Example label"
+          data={data}
+        />
+      )}
+    </MDBContainer>{*/}
+
       <div>
         {userStory?.feedback?.map((f) => (
-          <>
+          <div key={f._id}>
             {" "}
             <div className="feedback">
-            <label for="w3review">{f.user}</label>
-            <textarea id="w3review" name="w3review" rows="4" cols="50">
-              {f.text}
-            </textarea>
+              <label htmlFor="w3review">{f.user}</label>
+              <textarea
+                id="w3review"
+                name="w3review"
+                rows="4"
+                cols="50"
+                defaultValue={f.text}
+              ></textarea>
             </div>
-          </>
+          </div>
         )) ?? []}
       </div>
     </>

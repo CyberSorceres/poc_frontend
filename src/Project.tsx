@@ -24,7 +24,7 @@ export const loader: LoaderFunction<string> = async function ({ params }) {
   ).json();
   /*const project: Project = {
     name: params.projectId ?? "",
-    validation: false,
+    validation: false,s
     startDate: new Date(),
     epicStory: [
       {
@@ -69,26 +69,36 @@ export default function () {
   const { project: p } = useLoaderData() as { project: Project };
   const [project, setProject] = useState(p);
   if (p.name !== project.name) setProject(p);
+
   let epicStoryComponent: EpicStories;
   const role = import.meta.env.VITE_ROLE;
 
   switch (role) {
     case "dev":
       epicStoryComponent = new EpicStoriesSD();
+      break;
     case "pm":
       epicStoryComponent = new EpicStoriesPM();
+      break;
     case "user":
       epicStoryComponent = new EpicStoriesUser();
+      break;
   }
-  console.log(p);
+  console.log(project);
   return (
     <>
       <MDBContainer fluid>
         <h3> {project.name} </h3>
       </MDBContainer>
-      {project.epicStory.map((e) => (
-        <epicStoryComponent.EpicStories key={e.descript} epicStory={e} />
-      ))}
+      <div>
+        {project.epicStory.map((e) => (
+          <epicStoryComponent.EpicStories
+            key={e._id}
+            epicStory={e}
+            users={p.user}
+          />
+        ))}
+      </div>
     </>
   );
 }

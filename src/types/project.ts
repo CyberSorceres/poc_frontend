@@ -1,7 +1,5 @@
 import type { EpicStory } from "./epic_story";
-
-// TODO
-interface User {}
+import type { User } from "./user";
 
 export interface Project {
   name: string;
