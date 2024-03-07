@@ -48,6 +48,7 @@ export default function UserStory({
           backgroundColor: colors.background,
           borderRadius: 2,
           m: 1,
+          p: 2,
         }}
       >
         <h5> {userStory.title}</h5>
