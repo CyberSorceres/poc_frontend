@@ -51,8 +51,8 @@ export default function UserStory({
         }}
       >
         <h5> {userStory.title}</h5>
-          <Divider sx={{ backgroundColor: colors.onBackground }} />
-      {userStory.descript}
+        <Divider sx={{ backgroundColor: colors.onBackground }} />
+        {userStory.descript}
         <Divider sx={{ backgroundColor: colors.onBackground }} />
         <b>Acceptance Criteria: </b> <br />
         If Im logged in, I can log out <br />

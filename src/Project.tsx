@@ -1,5 +1,9 @@
-import { useState } from "react";
-import { LoaderFunction, useLoaderData, useRevalidator } from "react-router-dom";
+import { useContext, useState } from "react";
+import {
+  LoaderFunction,
+  useLoaderData,
+  useRevalidator,
+} from "react-router-dom";
 import EpicStory from "./EpicStory";
 import type { Project } from "./types/project";
 import {
@@ -13,6 +17,7 @@ import {
   TextField,
 } from "@mui/material";
 import { generateUserStories } from "./bedrock";
+import { LoginContext } from "./App";
 
 export const loader: LoaderFunction<string> = async function ({ params }) {
   const project = await (
@@ -28,8 +33,9 @@ export default function () {
   const { project: p } = useLoaderData() as { project: Project };
   const [project, setProject] = useState(p);
   if (JSON.stringify(p) !== JSON.stringify(project)) setProject(p);
-    const [openModal, setOpenModal] = useState(false);
-    const revalidator = useRevalidator();
+  const [openModal, setOpenModal] = useState(false);
+  const revalidator = useRevalidator();
+  const { login } = useContext(LoginContext) ?? { login: null };
   return (
     <>
       <Box
@@ -40,9 +46,11 @@ export default function () {
         }}
       >
         <h3> {project.name} </h3>
-        <Button onClick={() => setOpenModal(true)}>
-          <i className="fa-solid fa-plus"></i>
-        </Button>
+        {login === "user" && (
+          <Button onClick={() => setOpenModal(true)}>
+            <i className="fa-solid fa-plus"></i>
+          </Button>
+        )}
       </Box>
       <div>
         {project.epicStory.map((e) => (
@@ -57,27 +65,33 @@ export default function () {
           onSubmit: async (event: React.FormEvent<HTMLFormElement>) => {
             event.preventDefault();
             const formData = new FormData(event.currentTarget);
-	      const {name, description} = Object.fromEntries((formData as any).entries());
-	      const userStories = JSON.parse(await generateUserStories(description));
-	      const epicStory = await (await fetch(`${import.meta.env.VITE_API_URL}/addEpicStory`, {
-		  method: 'POST',
-		  body: JSON.stringify({
-		      title: name,
-		      descript: description,
-		      project: project._id,
-		      userStory: []
-		  }),
-	      })).text()
-	      for (const userStory of userStories) {
-		  await fetch(`${import.meta.env.VITE_API_URL}/addUserStory`, {
-		      method: 'POST',
-		      body: JSON.stringify({
-			  ...userStory,
-			  epicStory,
-		      }),
-		  });		  
-	      }
-	      revalidator.revalidate();
+            const { name, description } = Object.fromEntries(
+              (formData as any).entries(),
+            );
+            const userStories = JSON.parse(
+              await generateUserStories(description),
+            );
+            const epicStory = await (
+              await fetch(`${import.meta.env.VITE_API_URL}/addEpicStory`, {
+                method: "POST",
+                body: JSON.stringify({
+                  title: name,
+                  descript: description,
+                  project: project._id,
+                  userStory: [],
+                }),
+              })
+            ).text();
+            for (const userStory of userStories) {
+              await fetch(`${import.meta.env.VITE_API_URL}/addUserStory`, {
+                method: "POST",
+                body: JSON.stringify({
+                  ...userStory,
+                  epicStory,
+                }),
+              });
+            }
+            revalidator.revalidate();
             setOpenModal(false);
           },
         }}
@@ -99,7 +113,7 @@ export default function () {
           />
           <TextField
             required
-      name="description"
+            name="description"
             label="Descrizione"
             multiline
             fullWidth
