@@ -1,83 +1,35 @@
-import type { EpicStory } from "./types/epic_story";
-import type { User } from "./types/user";
-import { useEffect, useState } from "react";
-import {
-  MDBCheckbox,
-  MDBContainer,
-  MDBRow,
-  MDBCol,
-  MDBCollapse,
-} from "mdb-react-ui-kit";
+import { Box, Collapse } from "@mui/material";
+import { useState } from "react";
+import { EpicStory } from "./types/epic_story";
+import { User } from "./types/user";
 import UserStory from "./UserStory";
-import "./index.css";
 
-export interface EpicStories {
-  EpicStories({ epicStory }: { epicStory: EpicStory }): any;
-}
-export class EpicStoriesUser implements EpicStories {
-  EpicStories({ epicStory }: { epicStory: EpicStory }) {
-    const [showUserStories, setShowUserStories] = useState(false);
-    const [isComplete, setIsComplete] = useState(false);
-    const [isEnabled, setEnabled] = useState(
-      epicStory.userStory.map((e) => e.state),
-    );
-    useEffect(() => {
-      setIsComplete(epicStory.userStory.every((u) => u.state));
-    }, [isEnabled]);
-    return (
-      <>
-        <MDBContainer fluid className="d-block bg-secondary">
-          <MDBRow onClick={() => setShowUserStories(!showUserStories)}>
-            <span className="epic-story">
-              <i className={`arrow ${showUserStories ? "right" : "down"}`}></i>
-              &nbsp;
-              <MDBCheckbox
-                disableWrapper={true}
-                checked={isComplete}
-                readOnly={true}
-                onChange={() => {}}
-                label={epicStory.title}
-              />{" "}
-            </span>
-          </MDBRow>
-          <MDBCollapse open={showUserStories}>
-            {epicStory.userStory.map((u, i) => {
-              return (
-                <MDBRow key={u._id}>
-                  <UserStory
-                    key={u._id}
-                    userStory={u}
-                    sendToParent={(a) => {
-                      u.state = a;
-                      setEnabled([
-                        ...isEnabled.slice(0, i),
-                        a,
-                        ...isEnabled.slice(i + 1),
-                      ]);
-                    }}
-                  />
-                </MDBRow>
-              );
-            })}
-          </MDBCollapse>
-        </MDBContainer>
-      </>
-    );
-  }
-}
+export default function EpicStoryComponent({
+  epicStory,
+  users,
+}: {
+  epicStory: EpicStory;
+  users: User[];
+}) {
+  const [showUserStories, setShowUserStories] = useState(false);
+  return (
+    <>
+      <Box sx={{ flexDirection: "row", display: "flex", alignItems: "center" }}>
+        <i className={`arrow ${showUserStories ? "down" : "right"}`}></i>
+        <h4 onClick={() => setShowUserStories(!showUserStories)}>
+          {" "}
+          {epicStory.title}{" "}
+        </h4>
+      </Box>
 
-export class EpicStoriesPM implements EpicStories {
-  EpicStories({ epicStory, users }: { epicStory: EpicStory; users: User[] }) {
-    const [showUserStories, setShowUserStories] = useState(false);
-    const [isComplete, setIsComplete] = useState(false);
-    const [isEnabled, setEnabled] = useState(
-      epicStory.userStory.map((e) => e.state),
-    );
-    useEffect(() => {
-      setIsComplete(epicStory.userStory.every((u) => u.state));
-    }, [isEnabled]);
-    return (
-      <>
+      <Collapse in={showUserStories}>
+        {epicStory.userStory.map((u) => (
+          <UserStory userStory={u} users={users} sendToParent={() => {}} />
+        ))}
+      </Collapse>
+    </>
+  );
+  /*return <>
         <MDBContainer fluid className="d-block bg-secondary">
           <MDBRow onClick={() => setShowUserStories(!showUserStories)}>
             <span className="epic-story">
@@ -86,87 +38,33 @@ export class EpicStoriesPM implements EpicStories {
               <MDBCheckbox
                 disableWrapper={true}
                 checked={isComplete}
-                readOnly={true}
+               readOnly={true}
                 onChange={() => {}}
                 label={epicStory.title}
               />{" "}
             </span>
           </MDBRow>
-          <MDBCollapse open={showUserStories}>
+         <MDBCollapse open={showUserStories}>
             {epicStory.userStory.map((u, i) => {
               return (
                 <MDBRow key={u._id}>
                   <UserStory
                     key={u._id}
                     userStory={u}
-                    users={users}
+                   users={users}
                     sendToParent={(a) => {
                       u.state = a;
                       setEnabled([
                         ...isEnabled.slice(0, i),
                         a,
-                        ...isEnabled.slice(i + 1),
+                       ...isEnabled.slice(i + 1),
                       ]);
                     }}
                   />
                 </MDBRow>
-              );
+             );
             })}
           </MDBCollapse>
         </MDBContainer>
-      </>
-    );
-  }
-}
-
-export class EpicStoriesSD implements EpicStories {
-  EpicStories({ epicStory }: { epicStory: EpicStory }) {
-    const [showUserStories, setShowUserStories] = useState(false);
-    const [isComplete, setIsComplete] = useState(false);
-    const [isEnabled, setEnabled] = useState(
-      epicStory.userStory.map((e) => e.state),
-    );
-    useEffect(() => {
-      setIsComplete(epicStory.userStory.every((u) => u.state));
-    }, [isEnabled]);
-    return (
-      <>
-        <MDBContainer fluid className="d-block bg-secondary">
-          <MDBRow onClick={() => setShowUserStories(!showUserStories)}>
-            <span className="epic-story">
-              <i className={`arrow ${showUserStories ? "right" : "down"}`}></i>
-              &nbsp;
-              <MDBCheckbox
-                disableWrapper={true}
-                checked={isComplete}
-                readOnly={true}
-                onChange={() => {}}
-                label={epicStory.title}
-              />{" "}
-            </span>
-          </MDBRow>
-          <MDBCollapse open={showUserStories}>
-            {epicStory.userStory.map((u, i) => {
-              return (
-                <MDBRow key={u._id}>
-                  <UserStory
-                    key={u._id}
-                    userStory={u}
-                    sendToParent={(a) => {
-                      u.state = a;
-                      setEnabled([
-                        ...isEnabled.slice(0, i),
-                        a,
-                        ...isEnabled.slice(i + 1),
-                      ]);
-                    }}
-                  />
-                </MDBRow>
-              );
-            })}
-          </MDBCollapse>
-        </MDBContainer>
-      </>
-    );
-  }
+      </>*/
 }

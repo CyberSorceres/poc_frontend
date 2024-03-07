@@ -1,13 +1,11 @@
-import {
-  MDBCheckbox,
-  MDBCol,
-  MDBContainer,
-  MDBInput,
-  MDBSelect,
-} from "mdb-react-ui-kit";
 import type { UserStory } from "./types/user_story";
-import type { User } from "./types/user";
-import { useMemo } from "react";
+import type { User as UserType } from "./types/user";
+import User from "./User";
+import { Box, Button, Card, Divider, Menu, MenuItem } from "@mui/material";
+import { colors } from "./colors";
+import React, { useContext } from "react";
+import { LoginContext } from "./App";
+import { useRevalidator } from "react-router-dom";
 
 export default function UserStory({
   userStory,
@@ -15,60 +13,121 @@ export default function UserStory({
   sendToParent,
 }: {
   userStory: UserStory;
-  users: User[];
+  users: UserType[];
   sendToParent: (isActive: boolean) => void;
 }) {
-  /*const data = useMemo(
-    () => [ {userStory?.user?.filter((u) => u.role=="dev" ).map((f) =>(
-      { text: f.name, value: f.name },
-    ))??[]}
-      
-    ],
-    []
-  );*/
+  const { login } = useContext(LoginContext) ?? { login: null };
+  const revalidator = useRevalidator();
+  const addUser = async (user: UserType) => {
+    await fetch(`${import.meta.env.VITE_API_URL}/addDev`, {
+      method: "POST",
+      body: JSON.stringify({
+        devId: user._id,
+        userStoryId: userStory._id,
+      }),
+    });
+    revalidator.revalidate();
+  };
+
+  const removeUser = async (user: UserType) => {
+    await fetch(`${import.meta.env.VITE_API_URL}/removeDev`, {
+      method: "POST",
+      body: JSON.stringify({
+        devId: user._id,
+        userStoryId: userStory._id,
+      }),
+    });
+    revalidator.revalidate();
+  };
+
   return (
     <>
-      <MDBContainer>
-        <MDBCheckbox
-          disableWrapper={true}
-          defaultChecked={userStory.state}
-          onChange={(e) => sendToParent(e.currentTarget.checked)}
-          label={userStory.descript}
-        />
-      </MDBContainer>
-      <select className="chooseRole">
-        {users
-          ?.filter((u) => u.role == "sviluppatore")
-          .map((f) => <option key={f._id}>{f.name}</option>) ?? []}
-      </select>
-      {/*} <MDBContainer style={{ width: "300px" }} className="mt-5">
-      {inputActive ? (
-        <MDBInput onBlur={inputOnBlur} inputRef={otherInputEl} label="Other" id="form1" type="text" />
-      ) : (
-        <MDBSelect
-          onValueChange={(e) => setCurrentValue(e)}
-          label="Example label"
-          data={data}
-        />
-      )}
-    </MDBContainer>{*/}
-      <div>
-        {userStory?.feedback?.map((f) => (
-          <div key={f._id}>
+      <Card
+        sx={{
+          boxShadow: 1,
+          backgroundColor: colors.background,
+          borderRadius: 2,
+          m: 1,
+        }}
+      >
+        <h5> {userStory.title}</h5>
+          <Divider sx={{ backgroundColor: colors.onBackground }} />
+      {userStory.descript}
+        <Divider sx={{ backgroundColor: colors.onBackground }} />
+        <b>Acceptance Criteria: </b> <br />
+        If Im logged in, I can log out <br />
+        Then, I can log back in <br />
+        {!!userStory.feedback.length && (
+          <>
+            <Divider sx={{ backgroundColor: colors.onBackground }} />
+            <h5> Feedback: </h5>
+          </>
+        )}
+        {userStory.feedback.map((f) => (
+          <>
+            <Divider sx={{ backgroundColor: colors.onBackground }} />
+            {users.find((u) => u._id === f.user)?.name}
+            {f.text}
+          </>
+        ))}
+        <Divider sx={{ backgroundColor: colors.onBackground }} />
+        <Box
+          sx={{ flexDirection: "row", display: "flex", alignItems: "center" }}
+        >
+          {userStory.user.map((u) => (
+            <User
+              key={u._id}
+              name={u.name}
+              onRemove={() => removeUser(u)}
+              showDelete={login === "pm"}
+            />
+          ))}
+          {login === "pm" && (
+            <Box sx={{ pl: 1 }}>
+              <UserStoryMenu users={users} setUser={addUser} />
+            </Box>
+          )}
+        </Box>
+      </Card>
+    </>
+  );
+}
+
+function UserStoryMenu({
+  users,
+  setUser,
+}: {
+  users: UserType[];
+  setUser: (user: UserType) => void;
+}) {
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  return (
+    <>
+      <Button onClick={handleClick}>
+        <i className="fa-solid fa-plus"></i>
+      </Button>
+      <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+        {users.map((u) => (
+          <MenuItem
+            key={u._id}
+            onClick={() => {
+              setUser(u);
+              handleClose();
+            }}
+          >
             {" "}
-            <div className="feedback">
-              <label htmlFor="w3review">{f.user}</label>
-              <textarea
-                id="w3review"
-                name="w3review"
-                rows="4"
-                cols="50"
-                defaultValue={f.text}
-              ></textarea>
-            </div>
-          </div>
-        )) ?? []}
-      </div>
+            {u.name}{" "}
+          </MenuItem>
+        ))}
+      </Menu>
     </>
   );
 }

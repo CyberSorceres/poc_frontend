@@ -1,20 +1,18 @@
 import { useState } from "react";
-import { LoaderFunction, useLoaderData } from "react-router-dom";
-import {
-  EpicStories,
-  EpicStoriesPM,
-  EpicStoriesSD,
-  EpicStoriesUser,
-} from "./EpicStory";
+import { LoaderFunction, useLoaderData, useRevalidator } from "react-router-dom";
+import EpicStory from "./EpicStory";
 import type { Project } from "./types/project";
 import {
-  MDBContainer,
-  MDBCollapse,
-  MDBNavbar,
-  MDBNavbarToggler,
-  MDBIcon,
-  MDBBtn,
-} from "mdb-react-ui-kit";
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Modal,
+  TextField,
+} from "@mui/material";
+import { generateUserStories } from "./bedrock";
 
 export const loader: LoaderFunction<string> = async function ({ params }) {
   const project = await (
@@ -22,82 +20,96 @@ export const loader: LoaderFunction<string> = async function ({ params }) {
       `${import.meta.env.VITE_API_URL}/getProject?id=${params.projectId}`,
     )
   ).json();
-  /*const project: Project = {
-    name: params.projectId ?? "",
-    validation: false,
-    startDate: new Date(),
-    epicStory: [
-      {
-        title: "ChatGPT",
-        descript: "ChatGPT epic story",
-        state: false,
-        userStory: params.projectId?.includes("1")
-          ? [
-              {
-                descript: "Implementa CHATGPT",
-                state: false,
-                feedback: [
-                  {
-                    text: "complimenti",
-                    id: "12345",
-                    user:"sabry12",
-                  },
-                ],
-              },
-              {
-                descript: "Fai altro",
-                state: true,
-                user: "Marco",
-                feedback:[
-                  {
-                    text: "complimenti",
-                    id: "12345",
-                    user:"sabry12",
-                  },
-                ],
-              },
-            ]
-          : [],
-      },
-    ],
-    user: "",
-    };*/
+
   return project;
 };
 
 export default function () {
   const { project: p } = useLoaderData() as { project: Project };
   const [project, setProject] = useState(p);
-  if (p.name !== project.name) setProject(p);
-  let epicStoryComponent: EpicStories;
-  const role = import.meta.env.VITE_ROLE;
-
-  switch (role) {
-    case "dev":
-      epicStoryComponent = new EpicStoriesSD();
-      break;
-    case "pm":
-      epicStoryComponent = new EpicStoriesPM();
-      break;
-    case "user":
-      epicStoryComponent = new EpicStoriesUser();
-      break;
-  }
-  console.log(project);
+  if (JSON.stringify(p) !== JSON.stringify(project)) setProject(p);
+    const [openModal, setOpenModal] = useState(false);
+    const revalidator = useRevalidator();
   return (
     <>
-      <MDBContainer fluid>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "vertical",
+          alignItems: "center",
+        }}
+      >
         <h3> {project.name} </h3>
-      </MDBContainer>
+        <Button onClick={() => setOpenModal(true)}>
+          <i className="fa-solid fa-plus"></i>
+        </Button>
+      </Box>
       <div>
         {project.epicStory.map((e) => (
-          <epicStoryComponent.EpicStories
-            key={e._id}
-            epicStory={e}
-            users={p.user}
-          />
+          <EpicStory key={e._id} epicStory={e} users={p.user} />
         ))}
       </div>
+      <Dialog
+        open={openModal}
+        onClose={() => setOpenModal(false)}
+        PaperProps={{
+          component: "form",
+          onSubmit: async (event: React.FormEvent<HTMLFormElement>) => {
+            event.preventDefault();
+            const formData = new FormData(event.currentTarget);
+	      const {name, description} = Object.fromEntries((formData as any).entries());
+	      const userStories = JSON.parse(await generateUserStories(description));
+	      const epicStory = await (await fetch(`${import.meta.env.VITE_API_URL}/addEpicStory`, {
+		  method: 'POST',
+		  body: JSON.stringify({
+		      title: name,
+		      descript: description,
+		      project: project._id,
+		      userStory: []
+		  }),
+	      })).text()
+	      for (const userStory of userStories) {
+		  await fetch(`${import.meta.env.VITE_API_URL}/addUserStory`, {
+		      method: 'POST',
+		      body: JSON.stringify({
+			  ...userStory,
+			  epicStory,
+		      }),
+		  });		  
+	      }
+	      revalidator.revalidate();
+            setOpenModal(false);
+          },
+        }}
+      >
+        <DialogTitle>Crea una epic story</DialogTitle>
+        <DialogContent
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            rowGap: 2,
+          }}
+        >
+          <TextField
+            autoFocus
+            required
+            name="name"
+            label="Nome Epic Story"
+            fullWidth
+          />
+          <TextField
+            required
+      name="description"
+            label="Descrizione"
+            multiline
+            fullWidth
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenModal(false)}>Cancella</Button>
+          <Button type="submit">Crea</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
